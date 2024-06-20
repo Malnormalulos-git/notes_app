@@ -1,4 +1,12 @@
+using Microsoft.EntityFrameworkCore;
+using notes_app_backend.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton(builder.Configuration);
+
+builder.Services.AddDbContext<NotesAppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -35,6 +43,12 @@ app.MapGet("/weatherforecast", () =>
     })
     .WithName("GetWeatherForecast")
     .WithOpenApi();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<NotesAppDbContext>();
+    dbContext.Database.Migrate();
+}
 
 app.Run();
 
