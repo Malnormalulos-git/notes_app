@@ -2,11 +2,11 @@
 
 namespace notes_app_backend.Data
 {
-    public class NotesAppDbContext : DbContext
+    public class AppDbContext : DbContext
     {
         private readonly IConfiguration Configuration;
 
-        public NotesAppDbContext(IConfiguration configuration)
+        public AppDbContext(IConfiguration configuration)
         {
             Configuration = configuration;
         }

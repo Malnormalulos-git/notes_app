@@ -9,7 +9,7 @@ using notes_app_backend.Data;
 
 namespace notes_app_backend.Migrations
 {
-    [DbContext(typeof(NotesAppDbContext))]
+    [DbContext(typeof(AppDbContext))]
     partial class NotesAppDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

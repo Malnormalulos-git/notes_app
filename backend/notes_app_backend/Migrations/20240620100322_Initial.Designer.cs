@@ -10,7 +10,7 @@ using notes_app_backend.Data;
 
 namespace notes_app_backend.Migrations
 {
-    [DbContext(typeof(NotesAppDbContext))]
+    [DbContext(typeof(AppDbContext))]
     [Migration("20240620100322_Initial")]
     partial class Initial
     {
