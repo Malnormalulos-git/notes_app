@@ -2,5 +2,5 @@
 
 public record DeleteNoteDto
 {
-    int Id;
+    public int Id;
 }

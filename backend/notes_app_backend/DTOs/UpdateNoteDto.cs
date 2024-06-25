@@ -2,7 +2,7 @@
 
 public record UpdateNoteDto
 {
-    int Id { get; set; };
-    string Title { get; set; } = null!;
-    string Body { get; set; } = null!;
+    public int Id { get; set; }
+    public string Title { get; set; } = null!;
+    public string Body { get; set; } = null!;
 }
