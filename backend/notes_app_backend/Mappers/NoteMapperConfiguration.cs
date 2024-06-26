@@ -10,6 +10,6 @@ public class NoteMapperConfiguration : Profile
     {
         CreateMap<CreateNoteDto, Note>(MemberList.Destination);
         CreateMap<Note, NoteDto>(MemberList.Destination);
-        CreateMap<UpdateNoteDto, Note>(MemberList.Destination);
+        CreateMap<EditNoteDto, Note>(MemberList.Destination);
     }
 }

@@ -64,6 +64,46 @@ public class NotesController
         return new OkObjectResult(note);
     }
     
+    [HttpPatch(Name = "EditNote")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(304)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public async Task<object> EditNote([FromBody] EditNoteDto editNoteDto, CancellationToken ct = default)
+    {
+        var note = _appDbCtx.Notes.FirstOrDefault(n => n.Id == editNoteDto.Id);
+        if (note == null)
+        {
+            return new StatusCodeResult(400);
+        }
+        
+        bool areChangesMade = false;
+
+        if (!string.IsNullOrEmpty(editNoteDto.Title) && !string.Equals(note.Title, editNoteDto.Title))
+        {
+            note.Title = editNoteDto.Title;
+            areChangesMade = true;
+        }
+        
+        if (!string.IsNullOrEmpty(editNoteDto.Body) && !string.Equals(note.Body, editNoteDto.Body))
+        {
+            note.Body = editNoteDto.Body;
+            areChangesMade = true;
+        }
+
+        if (areChangesMade)
+        {
+            _appDbCtx.Update(note);
+            var res = await _appDbCtx.SaveChangesAsync(ct);
+            if (res == 0)
+            {
+                return new StatusCodeResult(500);
+            }
+            return new OkResult();
+        }
+        return new StatusCodeResult(304);
+    }
+    
     [HttpDelete("{id:long}", Name = "DeleteNote")]
     [ProducesResponseType(200)]
     [ProducesResponseType(500)]
@@ -76,7 +116,11 @@ public class NotesController
         }
 
         _appDbCtx.Notes.Remove(note);
-        await _appDbCtx.SaveChangesAsync(ct);
+        var res = await _appDbCtx.SaveChangesAsync(ct);
+        if (res == 0)
+        {
+            return new StatusCodeResult(500);
+        }
 
         return new OkResult();
     }
