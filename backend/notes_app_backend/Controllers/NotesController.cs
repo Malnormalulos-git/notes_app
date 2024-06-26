@@ -19,6 +19,23 @@ public class NotesController
         _mapper = mapper;
     }
     
+    [HttpPost(Name = "CreateNote")]
+    [ProducesResponseType(typeof(NoteDto), 200)]
+    [ProducesResponseType(500)]
+    public async Task<object> CreateNote([FromBody] CreateNoteDto createNoteDto, CancellationToken ct = default)
+    {
+        var noteToAdd = _mapper.Map<Note>(createNoteDto);
+        _appDbCtx.Notes.Add(noteToAdd);
+        
+        var res = await _appDbCtx.SaveChangesAsync(ct);
+        if (res == 0)
+        {
+            return new StatusCodeResult(500);
+        }
+        var addedNote = _mapper.Map<NoteDto>(noteToAdd);
+        return new OkObjectResult(addedNote);
+    }
+    
     [HttpGet(Name = "GetNotes")]
     [ProducesResponseType(typeof(List<NoteDto>), 200)]
     [ProducesResponseType(404)]
@@ -37,9 +54,9 @@ public class NotesController
     [HttpGet("{id:long}", Name = "GetNote")]
     [ProducesResponseType(typeof(NoteDto), 200)]
     [ProducesResponseType(404)]
-    public object GetNote([FromRoute(Name = "id")] long NoteId)
+    public object GetNote([FromRoute(Name = "id")] long id)
     {
-        var note = _mapper.Map<NoteDto>(_appDbCtx.Notes.FirstOrDefault(n => n.Id == NoteId));
+        var note = _mapper.Map<NoteDto>(_appDbCtx.Notes.FirstOrDefault(n => n.Id == id));
         if (note == null)
         {
             return new NotFoundResult();
@@ -47,20 +64,20 @@ public class NotesController
         return new OkObjectResult(note);
     }
     
-    [HttpPost(Name = "CreateNote")]
-    [ProducesResponseType(typeof(NoteDto), 200)]
+    [HttpDelete("{id:long}", Name = "DeleteNote")]
+    [ProducesResponseType(200)]
     [ProducesResponseType(500)]
-    public async Task<object> CreateNote([FromBody] CreateNoteDto createNoteDto, CancellationToken ct = default)
+    public async Task<object> DeleteNote([FromRoute(Name = "id")] long id, CancellationToken ct = default)
     {
-        var noteToAdd = _mapper.Map<Note>(createNoteDto);
-        _appDbCtx.Notes.Add(noteToAdd);
-        
-        var res = await _appDbCtx.SaveChangesAsync(ct);
-        if (res == 0)
+        var note = _appDbCtx.Notes.FirstOrDefault(x => x.Id == id);
+        if (note is null)
         {
             return new StatusCodeResult(500);
         }
-        var addedNote = _mapper.Map<NoteDto>(noteToAdd);
-        return new OkObjectResult(addedNote);
+
+        _appDbCtx.Notes.Remove(note);
+        await _appDbCtx.SaveChangesAsync(ct);
+
+        return new OkResult();
     }
 }
