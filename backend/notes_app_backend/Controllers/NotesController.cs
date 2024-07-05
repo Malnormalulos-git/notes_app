@@ -79,13 +79,13 @@ public class NotesController
         
         bool areChangesMade = false;
 
-        if (!string.IsNullOrEmpty(editNoteDto.Title) && !string.Equals(note.Title, editNoteDto.Title))
+        if (!string.IsNullOrEmpty(editNoteDto.Title))
         {
             note.Title = editNoteDto.Title;
             areChangesMade = true;
         }
         
-        if (!string.IsNullOrEmpty(editNoteDto.Body) && !string.Equals(note.Body, editNoteDto.Body))
+        if (!string.IsNullOrEmpty(editNoteDto.Body))
         {
             note.Body = editNoteDto.Body;
             areChangesMade = true;
