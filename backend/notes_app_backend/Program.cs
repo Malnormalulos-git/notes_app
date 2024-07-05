@@ -1,10 +1,12 @@
 using AutoMapper.EquivalencyExpression;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using notes_app_backend.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton(builder.Configuration);
+builder.Services.AddSingleton(TimeProvider.System);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
