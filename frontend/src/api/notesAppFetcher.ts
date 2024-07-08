@@ -1,6 +1,6 @@
 import { NotesAppContext } from "./notesAppContext";
 
-const baseUrl = ""; // TODO add your baseUrl
+const baseUrl = import.meta.env.VITE_API_URL; // TODO add your baseUrl
 
 export type ErrorWrapper<TError> =
   | TError
