@@ -4,18 +4,30 @@ using Microsoft.EntityFrameworkCore;
 using notes_app_backend.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+var services = builder.Services;
 
-builder.Services.AddSingleton(builder.Configuration);
-builder.Services.AddSingleton(TimeProvider.System);
+services.AddSingleton(builder.Configuration);
+services.AddSingleton(TimeProvider.System);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
+services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+services.AddControllers();
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
 
-builder.Services.AddAutoMapper(x =>
+services.AddCors(options => options.AddDefaultPolicy(
+    corsPolicyBuilder => {
+        if (builder.Environment.IsDevelopment()) {
+            corsPolicyBuilder
+                .WithOrigins("http://localhost:5173")
+                .AllowAnyMethod()
+                .AllowCredentials()
+                .AllowAnyHeader();
+        }
+    }));
+
+services.AddAutoMapper(x =>
 {
     x.AddCollectionMappers();
 }, typeof(Program));
@@ -28,7 +40,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.UseCors();
+
 app.MapControllers();
 
 using (var scope = app.Services.CreateScope())
