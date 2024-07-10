@@ -1,21 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using notes_app_backend.Data.Entities.Base;
 
 namespace notes_app_backend.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<AppUser>
     {
-        private readonly IConfiguration _configuration;
         private readonly TimeProvider _timeProvider;
-        public AppDbContext(IConfiguration configuration, TimeProvider timeProvider)
+        public AppDbContext(DbContextOptions options, TimeProvider timeProvider) : base(options)
         {
-            _configuration = configuration;
             _timeProvider = timeProvider;
         }
-        
-        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            options.UseNpgsql(_configuration.GetConnectionString("WebApiDatabase"));
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<AppUser>()
+                .HasIndex(b => b.Email)
+                .IsUnique();
         }
 
         public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess,
