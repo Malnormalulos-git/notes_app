@@ -9,6 +9,8 @@ using notes_app_backend.Data;
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
+builder.Configuration.AddUserSecrets(typeof(AppDbContext).Assembly);
+
 services.AddSingleton(builder.Configuration);
 services.AddSingleton(TimeProvider.System);
 
