@@ -13,6 +13,7 @@ builder.Configuration.AddUserSecrets(typeof(AppDbContext).Assembly);
 
 services.AddSingleton(builder.Configuration);
 services.AddSingleton(TimeProvider.System);
+services.AddScoped<HttpContextAccessor>();
 
 services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));

@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using notes_app_backend.Data;
@@ -7,17 +9,25 @@ using notes_app_backend.DTOs;
 
 namespace notes_app_backend.Controllers;
 
+[Authorize]
 [Route("api/notes")]
 [ApiController]
 public class NotesController : ControllerBase
 {
+    private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly AppDbContext _appDbCtx;
     private readonly IMapper _mapper;
 
-    public NotesController(AppDbContext appDbCtx, IMapper mapper)
+    public NotesController(AppDbContext appDbCtx, IMapper mapper, IHttpContextAccessor httpContextAccessor)
     {
         _appDbCtx = appDbCtx;
         _mapper = mapper;
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    private string GetUserIdFromHttpContext()
+    {
+        return _httpContextAccessor.HttpContext!.User.Claims.First(c => c.Type == "id").Value;
     }
     
     [HttpPost(Name = "CreateNote")]
@@ -25,7 +35,10 @@ public class NotesController : ControllerBase
     [ProducesResponseType(500)]
     public async Task<IActionResult> CreateNote([FromBody] CreateNoteDto createNoteDto, CancellationToken ct = default)
     {
+        var userId = GetUserIdFromHttpContext();
         var noteToAdd = _mapper.Map<Note>(createNoteDto);
+        
+        noteToAdd.OwnerId = userId;
         _appDbCtx.Notes.Add(noteToAdd);
         
         var res = await _appDbCtx.SaveChangesAsync(ct);
@@ -42,40 +55,62 @@ public class NotesController : ControllerBase
     [ProducesResponseType(404)]
     public async Task<IActionResult> GetNotes()
     {
-        var notes = await _appDbCtx.Notes.AsQueryable()
+        var userId = GetUserIdFromHttpContext();
+        
+        var notes = await _appDbCtx.Notes
+            .Where(n => n.OwnerId == userId)
+            .AsQueryable()
             .Select(t => _mapper.Map<NoteDto>(t))
             .ToListAsync();
+        
         if (notes.Count == 0)
         {
             return new NotFoundResult();
         }
+        
         return new OkObjectResult(notes);
     }
     
     [HttpGet("{id:long}", Name = "GetNote")]
     [ProducesResponseType(typeof(NoteDto), 200)]
+    [ProducesResponseType(403)]
     [ProducesResponseType(404)]
     public IActionResult GetNote([FromRoute(Name = "id")] long id)
     {
-        var note = _mapper.Map<NoteDto>(_appDbCtx.Notes.FirstOrDefault(n => n.Id == id));
+        var userId = GetUserIdFromHttpContext();
+        
+        var note = _appDbCtx.Notes.FirstOrDefault(n => n.Id == id);
+        
         if (note == null)
         {
             return new NotFoundResult();
         }
-        return new OkObjectResult(note);
+        if (note.OwnerId != userId)
+        {
+            return StatusCode(403);
+        }
+        
+        return new OkObjectResult(_mapper.Map<NoteDto>(note));
     }
     
     [HttpPatch(Name = "EditNote")]
     [ProducesResponseType(200)]
     [ProducesResponseType(304)]
     [ProducesResponseType(400)]
+    [ProducesResponseType(403)]
     [ProducesResponseType(500)]
     public async Task<IActionResult> EditNote([FromBody] EditNoteDto editNoteDto, CancellationToken ct = default)
     {
+        var userId = GetUserIdFromHttpContext();
+
         var note = _appDbCtx.Notes.FirstOrDefault(n => n.Id == editNoteDto.Id);
         if (note == null)
         {
             return new StatusCodeResult(400);
+        }
+        if (note.OwnerId != userId)
+        {
+            return StatusCode(403);
         }
         
         bool areChangesMade = false;
@@ -107,13 +142,20 @@ public class NotesController : ControllerBase
     
     [HttpDelete("{id:long}", Name = "DeleteNote")]
     [ProducesResponseType(200)]
+    [ProducesResponseType(403)]
     [ProducesResponseType(500)]
     public async Task<IActionResult> DeleteNote([FromRoute(Name = "id")] long id, CancellationToken ct = default)
     {
+        var userId = GetUserIdFromHttpContext();
+
         var note = _appDbCtx.Notes.FirstOrDefault(x => x.Id == id);
         if (note is null)
         {
             return new StatusCodeResult(500);
+        }
+        if (note.OwnerId != userId)
+        {
+            return StatusCode(403);
         }
 
         _appDbCtx.Notes.Remove(note);
