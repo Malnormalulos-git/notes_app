@@ -9,6 +9,87 @@ import type * as Fetcher from "./notesAppFetcher";
 import { notesAppFetch } from "./notesAppFetcher";
 import type * as Schemas from "./notesAppSchemas";
 
+export type RegisterError = Fetcher.ErrorWrapper<
+  | {
+      status: 401;
+      payload: Schemas.ProblemDetails;
+    }
+  | {
+      status: 409;
+      payload: Schemas.ProblemDetails;
+    }
+>;
+
+export type RegisterVariables = {
+  body?: Schemas.RegisterUserDto;
+} & NotesAppContext["fetcherOptions"];
+
+export const fetchRegister = (
+  variables: RegisterVariables,
+  signal?: AbortSignal,
+) =>
+  notesAppFetch<undefined, RegisterError, Schemas.RegisterUserDto, {}, {}, {}>({
+    url: "/api/auth/register",
+    method: "post",
+    ...variables,
+    signal,
+  });
+
+export const useRegister = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<undefined, RegisterError, RegisterVariables>,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useNotesAppContext();
+  return reactQuery.useMutation<undefined, RegisterError, RegisterVariables>({
+    mutationFn: (variables: RegisterVariables) =>
+      fetchRegister({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
+export type LogInError = Fetcher.ErrorWrapper<{
+  status: 401;
+  payload: Schemas.ProblemDetails;
+}>;
+
+export type LogInVariables = {
+  body?: Schemas.LogInDto;
+} & NotesAppContext["fetcherOptions"];
+
+export const fetchLogIn = (variables: LogInVariables, signal?: AbortSignal) =>
+  notesAppFetch<
+    Schemas.AuthResponseDto,
+    LogInError,
+    Schemas.LogInDto,
+    {},
+    {},
+    {}
+  >({ url: "/api/auth/login", method: "post", ...variables, signal });
+
+export const useLogIn = (
+  options?: Omit<
+    reactQuery.UseMutationOptions<
+      Schemas.AuthResponseDto,
+      LogInError,
+      LogInVariables
+    >,
+    "mutationFn"
+  >,
+) => {
+  const { fetcherOptions } = useNotesAppContext();
+  return reactQuery.useMutation<
+    Schemas.AuthResponseDto,
+    LogInError,
+    LogInVariables
+  >({
+    mutationFn: (variables: LogInVariables) =>
+      fetchLogIn({ ...fetcherOptions, ...variables }),
+    ...options,
+  });
+};
+
 export type CreateNoteError = Fetcher.ErrorWrapper<undefined>;
 
 export type CreateNoteVariables = {
@@ -50,7 +131,10 @@ export const useCreateNote = (
   });
 };
 
-export type GetNotesError = Fetcher.ErrorWrapper<undefined>;
+export type GetNotesError = Fetcher.ErrorWrapper<{
+  status: 404;
+  payload: Schemas.ProblemDetails;
+}>;
 
 export type GetNotesResponse = Schemas.NoteDto[];
 
@@ -89,7 +173,16 @@ export const useGetNotes = <TData = GetNotesResponse,>(
   });
 };
 
-export type EditNoteError = Fetcher.ErrorWrapper<undefined>;
+export type EditNoteError = Fetcher.ErrorWrapper<
+  | {
+      status: 400;
+      payload: Schemas.ProblemDetails;
+    }
+  | {
+      status: 403;
+      payload: Schemas.ProblemDetails;
+    }
+>;
 
 export type EditNoteVariables = {
   body?: Schemas.EditNoteDto;
@@ -127,7 +220,16 @@ export type GetNotePathParams = {
   id: number;
 };
 
-export type GetNoteError = Fetcher.ErrorWrapper<undefined>;
+export type GetNoteError = Fetcher.ErrorWrapper<
+  | {
+      status: 403;
+      payload: Schemas.ProblemDetails;
+    }
+  | {
+      status: 404;
+      payload: Schemas.ProblemDetails;
+    }
+>;
 
 export type GetNoteVariables = {
   pathParams: GetNotePathParams;
@@ -175,7 +277,10 @@ export type DeleteNotePathParams = {
   id: number;
 };
 
-export type DeleteNoteError = Fetcher.ErrorWrapper<undefined>;
+export type DeleteNoteError = Fetcher.ErrorWrapper<{
+  status: 403;
+  payload: Schemas.ProblemDetails;
+}>;
 
 export type DeleteNoteVariables = {
   pathParams: DeleteNotePathParams;

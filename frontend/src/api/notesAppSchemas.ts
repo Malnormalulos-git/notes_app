@@ -3,6 +3,10 @@
  *
  * @version 1.0
  */
+export type AuthResponseDto = {
+  token?: string | null;
+};
+
 export type CreateNoteDto = {
   title?: string | null;
   body?: string | null;
@@ -15,6 +19,14 @@ export type EditNoteDto = {
   id?: number;
   title?: string | null;
   body?: string | null;
+};
+
+export type LogInDto = {
+  /**
+   * @format email
+   */
+  email?: string | null;
+  password?: string | null;
 };
 
 export type NoteDto = {
@@ -32,4 +44,25 @@ export type NoteDto = {
    * @format date-time
    */
   lastUpdatedAt?: string;
+};
+
+export type ProblemDetails = {
+  type?: string | null;
+  title?: string | null;
+  /**
+   * @format int32
+   */
+  status?: number | null;
+  detail?: string | null;
+  instance?: string | null;
+} & {
+  [key: string]: any;
+};
+
+export type RegisterUserDto = {
+  /**
+   * @format email
+   */
+  email?: string | null;
+  password?: string | null;
 };
