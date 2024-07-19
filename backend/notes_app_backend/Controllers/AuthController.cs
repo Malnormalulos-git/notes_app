@@ -36,9 +36,9 @@ public class AuthController : ControllerBase
         };
 
         var res = await _userManager.CreateAsync(newUser, registerUser.Password);
-
-        if (res.Errors.Any(x => x.Code == "DuplicateUserEmail"))
-            return new ConflictResult();
+        
+        if (res.Errors.Any(x => x.Code == "DuplicateUserEmail" || x.Code == "DuplicateUserName" ))
+            return new ConflictObjectResult("DuplicateUserEmail");
 
         if (!res.Succeeded)
             return new BadRequestResult();
