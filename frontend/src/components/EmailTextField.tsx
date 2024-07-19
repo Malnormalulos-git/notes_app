@@ -8,7 +8,7 @@ const EmailTextField = (props: EmailTextFieldProps) => {
 
   return (
     <TextField
-      id={id}
+    id={id === undefined ? "email": id}
       {...register}
       helperText={helperText}
       error={error}

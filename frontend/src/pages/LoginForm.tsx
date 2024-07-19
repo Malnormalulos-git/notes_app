@@ -5,7 +5,10 @@ import EmailTextField from "../components/EmailTextField";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useRegister } from "../api/notesAppComponents";
+import { useLogIn } from "../api/notesAppComponents";
+import setAccessToken from "../shared/setAccessToken";
+import FormSubmitButton from "../components/FormSubmitButton";
+import MessageSnackbar from "../components/MessageSnackbar";
 
 const validationSchema = z
   .object({
@@ -19,32 +22,23 @@ const validationSchema = z
       .regex(/[a-z]/, { message: "Password must have at least one lowercase letter" })
       .regex(/[A-Z]/, { message: "Password must have at least one uppercase letter" })
       .regex(/[0-9]/, { message: "Password must have at least one digit" }),
-    confirmPassword: z
-      .string()
-      .min(1, { message: "Confirm password is required" }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ["confirmPassword"],
-    message: "Passwords don't match",
   });
 
 type ValidationSchema = z.infer<typeof validationSchema>;
 
-const Register = () => {
+const LoginForm = () => {
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const [fetchError, setFetchError] = useState("");
 
-  const [showPassword, setShowPassword] = useState(false);
-  const handleClickShowPassword = () => setShowPassword(!showPassword);
-
-  const {mutate} = useRegister({
+  const {mutate} = useLogIn({
     onSuccess: (response) => {  // TODO
       console.log("Success " + response);
-    //   navigate("/login");
+      setAccessToken(response.token);
+    //   navigate("/");
     },
     onError: (e) => { 
-      setFetchError(`${e.message}: ${e.stack.payload || e.stack.title}.`);
       console.log(e);
+      setFetchError(`${e.message}: ${e.stack.payload || e.stack.title || e.name}.`);
       setOpenErrorSnackbar(true);
     }
   });
@@ -84,52 +78,28 @@ const Register = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <EmailTextField
-          id="email"
           register={register("email")}
           helperText={errors.email?.message}
           error={errors.email === undefined ? false : true}
         />
         <PasswordTextField
-          id="password"
-          showPassword={showPassword}
-          handleClickShowPassword={handleClickShowPassword}
           register={register("password")}
           helperText={errors.password?.message}
           error={errors.password === undefined ? false : true}
         />
-        <PasswordTextField
-          id="confirmPassword"
-          label="Confirm password"
-          showPassword={showPassword}
-          handleClickShowPassword={handleClickShowPassword}
-          register={register("confirmPassword")}
-          helperText={errors.confirmPassword?.message}
-          error={errors.confirmPassword === undefined ? false : true}
+        <FormSubmitButton
+          text="Login"
         />
-        <Button
-          id="submitButton"
-          variant="contained"
-          type="submit"
-        >
-          Register 
-        </Button>
       </Stack>
     </Box>
-    <Snackbar 
-      open={openErrorSnackbar} 
-      autoHideDuration={7000} 
+    <MessageSnackbar
+      severity="error"
+      open={openErrorSnackbar}
+      message={fetchError}
       onClose={() => setOpenErrorSnackbar(false)}
-    >
-      <Alert 
-        onClose={() => setOpenErrorSnackbar(false)} 
-        severity="error" 
-        sx={{ width: '100%' }}
-      >
-        {fetchError}
-      </Alert>
-    </Snackbar>
+    />
     </>
   );
 }
 
-export default Register;
+export default LoginForm;

@@ -1,3 +1,4 @@
+import getAccessToken from "../shared/getAccessToken";
 import { NotesAppContext } from "./notesAppContext";
 
 const baseUrl = import.meta.env.VITE_API_URL;
@@ -39,8 +40,11 @@ export async function notesAppFetch<
   TPathParams
 >): Promise<TData> {
   try {
+    const token = getAccessToken();
+    const authHeader = token ? { ['Authorization']: `Bearer ${token}`} : null;
     const requestHeaders: HeadersInit = {
       "Content-Type": "application/json",
+      ...authHeader,
       ...headers,
     };
 

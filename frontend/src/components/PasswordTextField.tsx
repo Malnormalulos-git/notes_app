@@ -29,7 +29,7 @@ const PasswordTextField = (props: PasswordTextFieldProps) => {
 
   return (
     <TextField
-          id={id}
+          id={id === undefined ? "password": id}
           label={label}
           type={showPassword ? "text" : "password"}
           {...register}
