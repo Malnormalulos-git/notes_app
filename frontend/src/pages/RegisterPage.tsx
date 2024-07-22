@@ -1,4 +1,3 @@
-import { Container, Stack } from "@mui/material";
 import { useState } from "react";
 import PasswordTextField from "../components/form/PasswordTextField";
 import EmailTextField from "../components/form/EmailTextField";
@@ -8,6 +7,8 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useRegister } from "../api/notesAppComponents";
 import FormSubmitButton from "../components/form/FormSubmitButton";
 import MessageSnackbar from "../components/MessageSnackbar";
+import FormContainer from "../components/form/FormContainer";
+import AuthFormContainer from "../components/form/AuthFormContainer";
 
 const validationSchema = z
   .object({
@@ -70,22 +71,7 @@ const RegisterPage = () => {
 
   return (
     <>
-    <Container
-      component="main"
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100%'
-      }}
-    >
-      <Stack 
-        component="form"
-        width="30ch"
-        spacing={2}
-        mb="8rem"
-        onSubmit={handleSubmit(onSubmit)}
-      >
+    <AuthFormContainer onSubmit={handleSubmit(onSubmit)}>
         <EmailTextField
           register={register("email")}
           helperText={errors.email?.message}
@@ -110,8 +96,7 @@ const RegisterPage = () => {
         <FormSubmitButton
           text="Register"
         />
-      </Stack>
-    </Container>
+      </AuthFormContainer>
     <MessageSnackbar
       severity="error"
       open={openErrorSnackbar}
