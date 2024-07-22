@@ -1,7 +1,7 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { useState } from "react";
-import { CommonTextFieldProps } from "../shared/interfaces/CommonTextFieldProps";
+import { CommonTextFieldProps } from "../../interfaces/CommonTextFieldProps";
 
 interface PasswordTextFieldProps extends CommonTextFieldProps {
   showPassword?: boolean;

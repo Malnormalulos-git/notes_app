@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { CommonTextFieldProps } from "../shared/interfaces/CommonTextFieldProps";
+import { CommonTextFieldProps } from "../../interfaces/CommonTextFieldProps";
 
 interface EmailTextFieldProps extends CommonTextFieldProps { }
 

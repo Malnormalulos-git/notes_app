@@ -1,13 +1,13 @@
-import { Alert, Box, Button, Snackbar, Stack } from "@mui/material";
+import { Container, Stack } from "@mui/material";
 import { useState } from "react";
-import PasswordTextField from "../components/PasswordTextField";
-import EmailTextField from "../components/EmailTextField";
+import PasswordTextField from "../components/form/PasswordTextField";
+import EmailTextField from "../components/form/EmailTextField";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useLogIn } from "../api/notesAppComponents";
 import setAccessToken from "../shared/setAccessToken";
-import FormSubmitButton from "../components/FormSubmitButton";
+import FormSubmitButton from "../components/form/FormSubmitButton";
 import MessageSnackbar from "../components/MessageSnackbar";
 
 const validationSchema = z
@@ -26,9 +26,9 @@ const validationSchema = z
 
 type ValidationSchema = z.infer<typeof validationSchema>;
 
-const LoginForm = () => {
+const LoginPage = () => {
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
-  const [fetchError, setFetchError] = useState("");
+  const [queryError, setQueryError] = useState("");
 
   const {mutate} = useLogIn({
     onSuccess: (response) => {  // TODO
@@ -38,7 +38,7 @@ const LoginForm = () => {
     },
     onError: (e) => { 
       console.log(e);
-      setFetchError(`${e.message}: ${e.stack.payload || e.stack.title || e.name}.`);
+      setQueryError(`${e.message}: ${e.stack.payload || e.stack.title || e.name}.`);
       setOpenErrorSnackbar(true);
     }
   });
@@ -62,19 +62,20 @@ const LoginForm = () => {
 
   return (
     <>
-    <Box
+    <Container
       component="main"
       sx={{
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: '10em'
+        height: '100%'
       }}
     >
       <Stack 
         component="form"
         width="30ch"
         spacing={2}
+        mb="8rem"
         onSubmit={handleSubmit(onSubmit)}
       >
         <EmailTextField
@@ -91,15 +92,15 @@ const LoginForm = () => {
           text="Login"
         />
       </Stack>
-    </Box>
+    </Container>
     <MessageSnackbar
       severity="error"
       open={openErrorSnackbar}
-      message={fetchError}
+      message={queryError}
       onClose={() => setOpenErrorSnackbar(false)}
     />
     </>
   );
 }
 
-export default LoginForm;
+export default LoginPage;
