@@ -7,8 +7,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useRegister } from "../api/notesAppComponents";
 import FormSubmitButton from "../components/form/FormSubmitButton";
 import MessageSnackbar from "../components/MessageSnackbar";
-import FormContainer from "../components/form/FormContainer";
 import AuthFormContainer from "../components/form/AuthFormContainer";
+import { useNavigate } from "react-router-dom";
+import { REGISTER_ROUTE } from "../router/routes";
 
 const validationSchema = z
   .object({
@@ -34,6 +35,8 @@ const validationSchema = z
 type ValidationSchema = z.infer<typeof validationSchema>;
 
 const RegisterPage = () => {
+  const navigate = useNavigate();
+
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const [queryError, setQueryError] = useState("");
 
@@ -41,12 +44,10 @@ const RegisterPage = () => {
   const handleClickShowPassword = () => setShowPassword(!showPassword);
 
   const {mutate} = useRegister({
-    onSuccess: (response) => {  // TODO
-      console.log("Success " + response);
-    //   navigate("/login");
+    onSuccess: () => {  
+      navigate(REGISTER_ROUTE);
     },
     onError: (e) => { 
-      console.log(e);
       setQueryError(`${e.message}: ${e.stack.payload || e.stack.title || e.name}.`);
       setOpenErrorSnackbar(true);
     }

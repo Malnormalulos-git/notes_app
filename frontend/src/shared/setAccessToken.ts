@@ -1,5 +1,7 @@
+import setCookie from "./setCookie";
+
 const setAccessToken = (accessToken: string) => {
-  document.cookie = `access_token=${accessToken}`;
+  setCookie("access_token", accessToken, 1);
 }
 
 export default setAccessToken;

@@ -1,8 +1,5 @@
 import { Container } from "@mui/material";
-import Header from "./components/Header";
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import HomePage from "./pages/HomePage";
+import AppRouter from "./router/AppRouter";
 
 const App = () => {
 
@@ -16,10 +13,7 @@ const App = () => {
         height: "100vh",
       }}
     >
-      <Header/>
-      {/* <LoginPage/> */}
-      {/* <RegisterPage/> */}
-      <HomePage/>
+      <AppRouter/>
     </Container>
   );
 }

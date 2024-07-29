@@ -1,12 +1,23 @@
 import { useDeleteNote, useGetNotes } from "../api/notesAppComponents";
-import { Box, Typography, Grid, CircularProgress, Alert } from "@mui/material";
+import { Box, Grid, CircularProgress, Alert } from "@mui/material";
 import NoteCard from "../components/NoteCard";
 import MessageSnackbar from "../components/MessageSnackbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import AddNote from "../components/AddNote";
+import getAccessToken from "../shared/getAccessToken";
+import { useNavigate } from "react-router-dom";
+import { LOGIN_ROUTE } from "../router/routes";
 
 const HomePage = () => {
+  const navigate = useNavigate();
+  
+  useEffect(() => {
+    if(!getAccessToken()) {
+      navigate(LOGIN_ROUTE);
+    }
+  }, []);
+
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const [queryError, setQueryError] = useState("");
 
@@ -16,11 +27,7 @@ const HomePage = () => {
 
   const { mutate } = useDeleteNote(
     {
-      // onMutate: () => {
-      //   onStartExecutingAction();
-      // },
       onError: (e) => {
-        // console.log(e);
         setQueryError(`${e.message}: ${e.stack.payload || e.stack.title || e.name}.`);
         setOpenErrorSnackbar(true);
       },
@@ -42,13 +49,6 @@ const HomePage = () => {
   return (
     <>
       <Box sx={{ p: 3 }}>
-        {/* <Typography 
-          variant="h4" 
-          component="h1" 
-          gutterBottom
-        >
-          My Notes
-        </Typography> */}
         {queryStatus === 'pending' && (
           <Box 
             display="flex" 

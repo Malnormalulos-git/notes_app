@@ -8,8 +8,10 @@ import { useLogIn } from "../api/notesAppComponents";
 import setAccessToken from "../shared/setAccessToken";
 import FormSubmitButton from "../components/form/FormSubmitButton";
 import MessageSnackbar from "../components/MessageSnackbar";
-import FormContainer from "../components/form/FormContainer";
 import AuthFormContainer from "../components/form/AuthFormContainer";
+import { useNavigate } from "react-router-dom";
+import { HOME_ROUTE } from "../router/routes";
+import refreshPage from "../shared/refreshPage";
 
 const validationSchema = z
   .object({
@@ -28,17 +30,18 @@ const validationSchema = z
 type ValidationSchema = z.infer<typeof validationSchema>;
 
 const LoginPage = () => {
+  const navigate = useNavigate();
+
   const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
   const [queryError, setQueryError] = useState("");
 
   const {mutate} = useLogIn({
-    onSuccess: (response) => {  // TODO
-      console.log("Success " + response);
+    onSuccess: (response) => {  
       setAccessToken(response.token);
-    //   navigate("/");
+      navigate(HOME_ROUTE);
+      refreshPage();
     },
     onError: (e) => { 
-      console.log(e);
       setQueryError(`${e.message}: ${e.stack.payload || e.stack.title || e.name}.`);
       setOpenErrorSnackbar(true);
     }
