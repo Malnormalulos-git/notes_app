@@ -5,10 +5,10 @@ import { NoteDto } from "../api/notesAppSchemas";
 interface NoteCardProps {
   note: NoteDto;
   onDelete: (id: number) => void;
+  onEdit: (note: NoteDto) => void;
 }
 
-const NoteCard = (props: NoteCardProps) => {  
-  const {note, onDelete} = props;
+const NoteCard = ({note, onDelete, onEdit} : NoteCardProps) => {  
   return (
     <Card 
       sx={{ 
@@ -24,7 +24,11 @@ const NoteCard = (props: NoteCardProps) => {
           justifyContent="space-between" 
           alignItems="center"
         >
-          <Typography variant="h6">
+          <Typography 
+            variant="h6"
+            onClick={() => onEdit(note)}
+            sx={{ cursor: 'pointer' }}
+          >
             {note.title}
           </Typography>
           <IconButton
@@ -34,8 +38,12 @@ const NoteCard = (props: NoteCardProps) => {
           </IconButton>
         </Box>
         <Typography 
+          onClick={() => onEdit(note)}
           noWrap
-          sx={{ mt: 1 }}
+          sx={{ 
+            mt: 1, 
+            cursor: 'pointer' 
+          }}
         >
           {note.body}
         </Typography>

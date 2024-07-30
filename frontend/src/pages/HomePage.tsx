@@ -8,6 +8,8 @@ import AddNote from "../components/AddNote";
 import getAccessToken from "../shared/getAccessToken";
 import { useNavigate } from "react-router-dom";
 import { LOGIN_ROUTE } from "../router/routes";
+import { NoteDto } from "../api/notesAppSchemas";
+import EditNote from "../components/EditNote";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -56,6 +58,15 @@ const HomePage = () => {
     });
   }
 
+  const [editingNote, setEditingNote] = useState<NoteDto | null>(null);
+  const handleOpenEditModal = (note: NoteDto) => {
+    setEditingNote(note);
+  };
+
+  const handleCloseEditModal = () => {
+    setEditingNote(null);
+  };
+
   return (
     <>
       <Box sx={{ p: 3 }}>
@@ -89,6 +100,7 @@ const HomePage = () => {
                 <NoteCard 
                   note={note} 
                   onDelete={deleteNote}
+                  onEdit={handleOpenEditModal}
                 />
               </Grid>
             ))}
@@ -102,6 +114,14 @@ const HomePage = () => {
       <AddNote
         setMessageSnackbarAttributes={setMessageSnackbarAttributes}
       />
+      {editingNote && (
+        <EditNote
+          note={editingNote}
+          open={editingNote === null ? false : true}
+          onClose={handleCloseEditModal}
+          setMessageSnackbarAttributes={setMessageSnackbarAttributes}
+        />
+      )}
     </>
   );
 };
