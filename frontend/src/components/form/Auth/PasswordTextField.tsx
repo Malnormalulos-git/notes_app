@@ -1,7 +1,7 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import { useState } from "react";
-import { CommonTextFieldProps } from "../../interfaces/CommonTextFieldProps";
+import { CommonTextFieldProps } from "../../../interfaces/CommonTextFieldProps";
 
 interface PasswordTextFieldProps extends CommonTextFieldProps {
   showPassword?: boolean;
@@ -29,28 +29,28 @@ const PasswordTextField = (props: PasswordTextFieldProps) => {
 
   return (
     <TextField
-          id={id === undefined ? "password": id}
-          label={label}
-          type={showPassword ? "text" : "password"}
-          {...register}
-          error={error}
-          helperText={helperText}
-          variant="outlined"
-          size="small"
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  edge="end"
-                  onClick={handleClickShowPassword}
-                >
-                  {showPassword ? <Visibility /> : <VisibilityOff />}
-                </IconButton>
-              </InputAdornment>
-            )
-          }}
-        />
+      id={id || "password"}
+      label={label}
+      type={showPassword ? "text" : "password"}
+      {...register}
+      error={error}
+      helperText={helperText}
+      variant="outlined"
+      size="small"
+      InputProps={{
+        endAdornment: (
+          <InputAdornment position="end">
+            <IconButton
+              aria-label="toggle password visibility"
+              edge="end"
+              onClick={handleClickShowPassword}
+            >
+              {showPassword ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
+          </InputAdornment>
+        )
+      }}
+    />
   );
 }
 

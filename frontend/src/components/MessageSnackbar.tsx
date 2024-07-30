@@ -1,11 +1,16 @@
-import { Alert, AlertColor, AlertPropsColorOverrides, Snackbar } from "@mui/material";
-import { OverridableStringUnion } from '@mui/types';
+import { Alert, AlertColor, Snackbar } from "@mui/material";
+
+export interface MessageSnackbarAttributes {
+  open: boolean;
+  message: string;
+  severity: AlertColor;
+}
 
 interface MessageSnackbarProps {
   open: boolean;
   message: string;
   onClose: () => void;
-  severity : OverridableStringUnion<AlertColor, AlertPropsColorOverrides>;
+  severity : AlertColor;
   autoHideDuration ?: number;
 }
 
@@ -15,7 +20,7 @@ const MessageSnackbar = (props: MessageSnackbarProps) => {
   return (
     <Snackbar 
       open={open} 
-      autoHideDuration={autoHideDuration === undefined ? 7000: autoHideDuration} 
+      autoHideDuration={ autoHideDuration || 7000} 
       onClose={onClose}
     >
       <Alert 

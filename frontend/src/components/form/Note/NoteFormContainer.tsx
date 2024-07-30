@@ -1,5 +1,5 @@
 import React from 'react';
-import FormContainer from "./FormContainer";
+import FormContainer from "../FormContainer";
 import { StackProps, ContainerProps } from "@mui/material";
 
 interface NoteFormContainerProps {
@@ -13,7 +13,6 @@ const NoteFormContainer = (props: NoteFormContainerProps) => {
   const stackProps: Omit<StackProps, 'component' | 'onSubmit'> = {
     width: "100%",
     spacing: 2,
-    // mb: "8rem"
   };
   
   const containerProps: Omit<ContainerProps, 'component'> = {

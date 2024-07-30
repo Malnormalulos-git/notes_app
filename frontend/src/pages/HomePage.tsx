@@ -1,7 +1,7 @@
 import { useDeleteNote, useGetNotes } from "../api/notesAppComponents";
 import { Box, Grid, CircularProgress, Alert } from "@mui/material";
 import NoteCard from "../components/NoteCard";
-import MessageSnackbar from "../components/MessageSnackbar";
+import MessageSnackbar, { MessageSnackbarAttributes } from "../components/MessageSnackbar";
 import { useEffect, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import AddNote from "../components/AddNote";
@@ -18,8 +18,11 @@ const HomePage = () => {
     }
   }, []);
 
-  const [openErrorSnackbar, setOpenErrorSnackbar] = useState(false);
-  const [queryError, setQueryError] = useState("");
+  const [messageSnackbarAttributes, setMessageSnackbarAttributes] = useState<MessageSnackbarAttributes>({
+    open: false,
+    message: "",
+    severity: "info"
+  });
 
   const queryClient = useQueryClient();
 
@@ -28,17 +31,24 @@ const HomePage = () => {
   const { mutate } = useDeleteNote(
     {
       onError: (e) => {
-        setQueryError(`${e.message}: ${e.stack.payload || e.stack.title || e.name}.`);
-        setOpenErrorSnackbar(true);
+        setMessageSnackbarAttributes({
+          open: true,
+          message: `${e.message}: ${e.stack.payload || e.stack.title || e.name}.`,
+          severity: "error"
+        });
       },
       onSuccess: () => {
+        setMessageSnackbarAttributes({
+          open: true,
+          message: "Note deleted successfully.",
+          severity: "success"
+        });
         queryClient.invalidateQueries();
       },
     }
   );
 
   const deleteNote = (id: number) => {
-    console.log(id);
     mutate({
       pathParams: {
         id: id
@@ -86,12 +96,12 @@ const HomePage = () => {
         )}
       </Box>
       <MessageSnackbar
-        severity="error"
-        open={openErrorSnackbar}
-        message={queryError}
-        onClose={() => setOpenErrorSnackbar(false)}
+        {...messageSnackbarAttributes}
+        onClose={() => setMessageSnackbarAttributes(prev => ({ ...prev, open: false }))}
       />
-      <AddNote/>
+      <AddNote
+        setMessageSnackbarAttributes={setMessageSnackbarAttributes}
+      />
     </>
   );
 };

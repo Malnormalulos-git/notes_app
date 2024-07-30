@@ -12,7 +12,6 @@ const NoteCard = (props: NoteCardProps) => {
   return (
     <Card 
       sx={{ 
-        // mb: 2, 
         width: '100%', 
         boxShadow: '0 0 5px #5292D2'
       }}

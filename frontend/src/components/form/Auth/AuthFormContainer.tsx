@@ -1,5 +1,5 @@
 import React from 'react';
-import FormContainer from "./FormContainer";
+import FormContainer from "../FormContainer";
 import { StackProps, ContainerProps } from "@mui/material";
 
 interface AuthFormContainerProps {

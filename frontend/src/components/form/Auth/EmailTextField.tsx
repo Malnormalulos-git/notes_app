@@ -1,5 +1,5 @@
 import { TextField } from "@mui/material";
-import { CommonTextFieldProps } from "../../interfaces/CommonTextFieldProps";
+import { CommonTextFieldProps } from "../../../interfaces/CommonTextFieldProps";
 
 interface EmailTextFieldProps extends CommonTextFieldProps { }
 
@@ -8,7 +8,7 @@ const EmailTextField = (props: EmailTextFieldProps) => {
 
   return (
     <TextField
-    id={id === undefined ? "email": id}
+      id={id || "email"}
       {...register}
       helperText={helperText}
       error={error}

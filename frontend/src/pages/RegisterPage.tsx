@@ -1,13 +1,13 @@
 import { useState } from "react";
-import PasswordTextField from "../components/form/PasswordTextField";
-import EmailTextField from "../components/form/EmailTextField";
+import PasswordTextField from "../components/form/Auth/PasswordTextField";
+import EmailTextField from "../components/form/Auth/EmailTextField";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useRegister } from "../api/notesAppComponents";
 import FormSubmitButton from "../components/form/FormSubmitButton";
 import MessageSnackbar from "../components/MessageSnackbar";
-import AuthFormContainer from "../components/form/AuthFormContainer";
+import AuthFormContainer from "../components/form/Auth/AuthFormContainer";
 import { useNavigate } from "react-router-dom";
 import { REGISTER_ROUTE } from "../router/routes";
 
