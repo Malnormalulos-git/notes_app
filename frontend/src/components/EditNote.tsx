@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useEditNote } from "../api/notesAppComponents";
 import { MessageSnackbarAttributes } from "./MessageSnackbar";
 import { z } from "zod";
@@ -11,7 +11,6 @@ import { NoteDto } from "../api/notesAppSchemas";
 import NoteFormModal from "./form/Note/NoteFormModal";
 import NoteTitleTextField from "./form/Note/NoteTitleTextField";
 import NoteContentTextField from "./form/Note/NoteContentTextField";
-import { Typography } from "@mui/material";
 import InfoText from "./form/Note/InfoTest";
 
 const validationSchema = z
@@ -19,9 +18,8 @@ const validationSchema = z
     noteTitle: z
       .string()
       .min(1, { message: "Title is required" }),
-      noteContent: z
+    noteContent: z
       .string()
-      .min(1, { message: "Content is required" })
   });
 
 type ValidationSchema = z.infer<typeof validationSchema>;
@@ -61,7 +59,8 @@ const EditNote = ({ note, open, onClose, setMessageSnackbarAttributes }: EditNot
     handleSubmit,
     formState: { errors },
     reset,
-    setValue
+    setValue,
+    watch
   } = useForm<ValidationSchema>({
     resolver: zodResolver(validationSchema),
   });
@@ -69,16 +68,23 @@ const EditNote = ({ note, open, onClose, setMessageSnackbarAttributes }: EditNot
   useEffect(() => {
     if (note) {
       setValue("noteTitle", note.title!);
-      setValue("noteContent", note.body!);
+      setValue("noteContent", note.content!);
     }
   }, [note, setValue]);
+
+  const watchedTitle = watch("noteTitle");
+  const watchedContent = watch("noteContent");
+
+  const isDisabled = useMemo(() => {
+    return note.title === watchedTitle && note.content === watchedContent;
+  }, [note.title, note.content, watchedTitle, watchedContent]);
 
   const onSubmit: SubmitHandler<ValidationSchema> = (data) => {
     mutate({
       body: {
         id: note.id!,
         title: data.noteTitle,
-        body: data.noteContent
+        content: data.noteContent
       }
     });
   }
@@ -110,6 +116,7 @@ const EditNote = ({ note, open, onClose, setMessageSnackbarAttributes }: EditNot
       />
         <FormSubmitButton
           text="Update"
+          disabled={isDisabled}
         />
       </NoteFormContainer>
     </NoteFormModal>

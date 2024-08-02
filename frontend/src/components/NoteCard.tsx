@@ -45,7 +45,7 @@ const NoteCard = ({note, onDelete, onEdit} : NoteCardProps) => {
             cursor: 'pointer' 
           }}
         >
-          {note.body}
+          {note.content}
         </Typography>
         <Typography 
           color="text.secondary" 

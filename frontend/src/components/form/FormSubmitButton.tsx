@@ -1,20 +1,20 @@
 import { Button } from "@mui/material";
 
 interface FormSubmitButtonProps {
-  id?: string;
-  text?: string;
+  id ?: string;
+  text ?: string;
+  disabled ?: boolean;
 }
 
-const FormSubmitButton = (props: FormSubmitButtonProps) => {
-  const {id, text} = props;
-
+const FormSubmitButton = ({id, text, disabled}: FormSubmitButtonProps) => {
   return (
     <Button
-      id={id === undefined ? "submitButton": id}
+      id={id || "submitButton"}
       variant="contained"
       type="submit"
+      disabled={disabled || false}
     >
-      {text === undefined ? "Submit": text}
+      {text || "Submit"}
     </Button>
   );
 }

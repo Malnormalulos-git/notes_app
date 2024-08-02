@@ -20,7 +20,6 @@ const validationSchema = z
       .min(1, { message: "Title is required" }),
     noteContent: z
       .string()
-      .min(1, { message: "Content is required" })
   });
 
 type ValidationSchema = z.infer<typeof validationSchema>;
@@ -68,7 +67,7 @@ const AddNote = ({setMessageSnackbarAttributes} : AddNoteProps) => {
     mutate({
       body: {
         title: data.noteTitle,
-        body: data.noteContent
+        content: data.noteContent
       }
     })
   }

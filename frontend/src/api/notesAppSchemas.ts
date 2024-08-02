@@ -9,7 +9,7 @@ export type AuthResponseDto = {
 
 export type CreateNoteDto = {
   title?: string | null;
-  body?: string | null;
+  content?: string | null;
 };
 
 export type EditNoteDto = {
@@ -18,7 +18,7 @@ export type EditNoteDto = {
    */
   id?: number;
   title?: string | null;
-  body?: string | null;
+  content?: string | null;
 };
 
 export type LogInDto = {
@@ -35,7 +35,7 @@ export type NoteDto = {
    */
   id?: number;
   title?: string | null;
-  body?: string | null;
+  content?: string | null;
   /**
    * @format date-time
    */
