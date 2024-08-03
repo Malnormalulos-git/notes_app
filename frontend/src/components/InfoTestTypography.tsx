@@ -3,17 +3,16 @@ import { Typography } from "@mui/material";
 interface InfoTextProps{
   text : string;
 }
-const InfoText = ({text} : InfoTextProps) => {
+const InfoTextTypography = ({text} : InfoTextProps) => {
   return(
   <Typography
     color="text.secondary" 
-    sx={{
-      margin: "0 !important"
-    }}
+    gutterBottom
+    whiteSpace="pre-line"
   >
     {text}
   </Typography>
   );
 }
 
-export default InfoText;
+export default InfoTextTypography;

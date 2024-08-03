@@ -11,7 +11,7 @@ import { NoteDto } from "../api/notesAppSchemas";
 import NoteFormModal from "./form/Note/NoteFormModal";
 import NoteTitleTextField from "./form/Note/NoteTitleTextField";
 import NoteContentTextField from "./form/Note/NoteContentTextField";
-import InfoText from "./form/Note/InfoTest";
+import InfoTextTypography from "./InfoTestTypography";
 
 const validationSchema = z
   .object({
@@ -98,11 +98,13 @@ const EditNote = ({ note, open, onClose, setMessageSnackbarAttributes }: EditNot
       <NoteFormContainer
         onSubmit={handleSubmit(onSubmit)}
       >
-      <InfoText
-        text={"Created: " + new Date(note.createdAt!).toLocaleString()}
-      />
-      <InfoText
-        text={"Updated: " + new Date(note.lastUpdatedAt!).toLocaleString()}
+      <InfoTextTypography
+        text={
+          note.lastUpdatedAt === note.createdAt
+            ? `Created: ${new Date(note.createdAt!).toLocaleString()}`
+            : `Created: ${new Date(note.createdAt!).toLocaleString()}
+               Updated: ${new Date(note.lastUpdatedAt!).toLocaleString()}`
+        }
       />
       <NoteTitleTextField
         register={register("noteTitle")}

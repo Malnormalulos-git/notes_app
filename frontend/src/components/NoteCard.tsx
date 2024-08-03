@@ -1,6 +1,7 @@
 import { Box, Card, CardContent, IconButton, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { NoteDto } from "../api/notesAppSchemas";
+import InfoTextTypography from "./InfoTestTypography";
 
 interface NoteCardProps {
   note: NoteDto;
@@ -47,12 +48,13 @@ const NoteCard = ({note, onDelete, onEdit} : NoteCardProps) => {
         >
           {note.content}
         </Typography>
-        <Typography 
-          color="text.secondary" 
-          gutterBottom
-        >
-          Updated: {new Date(note.lastUpdatedAt!).toLocaleString()}
-        </Typography>
+        <InfoTextTypography
+        text={
+          note.lastUpdatedAt === note.createdAt
+            ? `Created: ${new Date(note.createdAt!).toLocaleString()}`
+            : `Updated: ${new Date(note.lastUpdatedAt!).toLocaleString()}`
+        }
+        />
       </CardContent>
     </Card>
   );
