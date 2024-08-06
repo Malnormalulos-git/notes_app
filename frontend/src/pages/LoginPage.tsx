@@ -37,7 +37,7 @@ const LoginPage = () => {
 
   const {mutate} = useLogIn({
     onSuccess: (response) => {  
-      setAccessToken(response.token);
+      setAccessToken(response.token!);
       navigate(HOME_ROUTE);
       refreshPage();
     },
@@ -66,27 +66,27 @@ const LoginPage = () => {
 
   return (
     <>
-    <AuthFormContainer onSubmit={handleSubmit(onSubmit)}>
-        <EmailTextField
-          register={register("email")}
-          helperText={errors.email?.message}
-          error={errors.email === undefined ? false : true}
-        />
-        <PasswordTextField
-          register={register("password")}
-          helperText={errors.password?.message}
-          error={errors.password === undefined ? false : true}
-        />
-        <FormSubmitButton
-          text="Login"
-        />
-      </AuthFormContainer>
-    <MessageSnackbar
-      severity="error"
-      open={openErrorSnackbar}
-      message={queryError}
-      onClose={() => setOpenErrorSnackbar(false)}
-    />
+      <AuthFormContainer onSubmit={handleSubmit(onSubmit)}>
+          <EmailTextField
+            register={register("email")}
+            helperText={errors.email?.message}
+            error={errors.email === undefined ? false : true}
+          />
+          <PasswordTextField
+            register={register("password")}
+            helperText={errors.password?.message}
+            error={errors.password === undefined ? false : true}
+          />
+          <FormSubmitButton
+            text="Login"
+          />
+        </AuthFormContainer>
+      <MessageSnackbar
+        severity="error"
+        open={openErrorSnackbar}
+        message={queryError}
+        onClose={() => setOpenErrorSnackbar(false)}
+      />
     </>
   );
 }

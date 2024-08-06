@@ -3,7 +3,7 @@ import { CommonTextFieldProps } from "../../../interfaces/CommonTextFieldProps";
 
 interface EmailTextFieldProps extends CommonTextFieldProps { }
 
-const EmailTextField = (props: EmailTextFieldProps) => {
+const EmailTextField = (props : EmailTextFieldProps) => {
   const { id, register, helperText, error } = props;
 
   return (

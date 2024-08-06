@@ -1,11 +1,8 @@
-import React from 'react';
 import FormContainer from "../FormContainer";
 import { StackProps, ContainerProps } from "@mui/material";
+import { CommonFormContainerProps } from '../../../interfaces/CommonFormContainerProps';
 
-interface NoteFormContainerProps {
-  onSubmit: () => void;
-  children: React.ReactNode;
-}
+interface NoteFormContainerProps extends CommonFormContainerProps { }
 
 const NoteFormContainer = (props: NoteFormContainerProps) => {
   const { onSubmit, children } = props;

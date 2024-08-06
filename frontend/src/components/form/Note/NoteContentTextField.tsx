@@ -1,10 +1,11 @@
-import { TextField } from "@mui/material";
+import { TextField, useMediaQuery, useTheme } from "@mui/material";
 import { CommonTextFieldProps } from "../../../interfaces/CommonTextFieldProps";
 
 interface NoteContentTextFieldProps extends CommonTextFieldProps { }
 
-const NoteContentTextField = (props: NoteContentTextFieldProps) => {
-  const { id, register, helperText, error } = props;
+const NoteContentTextField = ({ id, register, helperText, error }: NoteContentTextFieldProps) => {
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   return (
     <TextField
@@ -16,7 +17,7 @@ const NoteContentTextField = (props: NoteContentTextFieldProps) => {
       label="Content" 
       margin="normal"
       multiline
-      rows={9}
+      rows={isSmallScreen ? 5 : 9}
     />
   );
 }

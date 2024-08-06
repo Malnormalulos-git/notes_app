@@ -1,7 +1,7 @@
-import getCookieByName from "./getCookie";
+import getCookie from "./getCookie";
 
 const getAccessToken = () => {
-  return getCookieByName('access_token');
+  return getCookie('access_token');
 }
 
 export default getAccessToken;

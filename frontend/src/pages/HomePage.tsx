@@ -42,7 +42,7 @@ const HomePage = () => {
       onSuccess: () => {
         setMessageSnackbarAttributes({
           open: true,
-          message: "Note deleted successfully.",
+          message: "Note successfully deleted.",
           severity: "success"
         });
         queryClient.invalidateQueries();
@@ -50,7 +50,7 @@ const HomePage = () => {
     }
   );
 
-  const deleteNote = (id: number) => {
+  const handleDeleteNote = (id: number) => {
     mutate({
       pathParams: {
         id: id
@@ -59,7 +59,7 @@ const HomePage = () => {
   }
 
   const [editingNote, setEditingNote] = useState<NoteDto | null>(null);
-  const handleOpenEditModal = (note: NoteDto) => {
+  const handleEditNote = (note: NoteDto) => {
     setEditingNote(note);
   };
 
@@ -99,8 +99,8 @@ const HomePage = () => {
               >
                 <NoteCard 
                   note={note} 
-                  onDelete={deleteNote}
-                  onEdit={handleOpenEditModal}
+                  onDelete={handleDeleteNote}
+                  onEdit={handleEditNote}
                 />
               </Grid>
             ))}

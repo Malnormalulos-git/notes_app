@@ -9,27 +9,26 @@ interface PasswordTextFieldProps extends CommonTextFieldProps {
   handleClickShowPassword?: () => void;
 }
 
-const PasswordTextField = (props: PasswordTextFieldProps) => {
+const PasswordTextField = (props : PasswordTextFieldProps) => {
   const [internalShowPassword, setInternalShowPassword] = useState(false);
   
   const { showPassword : externalShowPassword, 
-          label : externalLabel, 
-          id, 
+          label = "Password", 
+          id = "password", 
           handleClickShowPassword : externalHandleClickShowPassword,
           register, 
           helperText,
           error
         } = props;
   
-  const label = externalLabel !== undefined ? externalLabel : "Password";
-  const showPassword = externalShowPassword !== undefined ? externalShowPassword : internalShowPassword;
+  const showPassword = externalShowPassword === undefined ? internalShowPassword : externalShowPassword;
   const handleClickShowPassword = externalHandleClickShowPassword || (() => {
     setInternalShowPassword(!internalShowPassword);
   });
 
   return (
     <TextField
-      id={id || "password"}
+      id={id}
       label={label}
       type={showPassword ? "text" : "password"}
       {...register}

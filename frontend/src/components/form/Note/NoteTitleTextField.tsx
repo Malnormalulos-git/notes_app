@@ -3,9 +3,7 @@ import { CommonTextFieldProps } from "../../../interfaces/CommonTextFieldProps";
 
 interface NoteTitleTextFieldProps extends CommonTextFieldProps { }
 
-const NoteTitleTextField = (props: NoteTitleTextFieldProps) => {
-  const { id, register, helperText, error } = props;
-
+const NoteTitleTextField = ({ id, register, helperText, error } : NoteTitleTextFieldProps) => {
   return (
     <TextField
       id={id || "noteTitle"}

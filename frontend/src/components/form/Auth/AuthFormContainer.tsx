@@ -1,15 +1,10 @@
-import React from 'react';
 import FormContainer from "../FormContainer";
 import { StackProps, ContainerProps } from "@mui/material";
+import { CommonFormContainerProps } from '../../../interfaces/CommonFormContainerProps';
 
-interface AuthFormContainerProps {
-  onSubmit: () => void;
-  children: React.ReactNode;
-}
+interface AuthFormContainerProps extends CommonFormContainerProps { }
 
-const AuthFormContainer = (props: AuthFormContainerProps) => {
-  const { onSubmit, children } = props;
-  
+const AuthFormContainer = ({ onSubmit, children } : AuthFormContainerProps) => {  
   const stackProps: Omit<StackProps, 'component' | 'onSubmit'> = {
     width: "30ch",
     spacing: 2,

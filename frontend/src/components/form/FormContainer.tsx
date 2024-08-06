@@ -1,16 +1,20 @@
 import React from 'react';
 import { Container, ContainerProps, Stack, StackProps } from "@mui/material";
+import { CommonFormContainerProps } from '../../interfaces/CommonFormContainerProps';
 
-interface FormContainerProps {
-  onSubmit: () => void;
-  children: React.ReactNode;
+interface FormContainerProps extends CommonFormContainerProps{
   component ?: React.ElementType;
   containerProps?: Omit<ContainerProps, 'component'>;
-  stackProps?: Omit<StackProps, 'component' | 'onSubmit'>;
+  stackProps?: Omit<StackProps, 'component' & 'onSubmit'>;
 }
 
 const FormContainer = (props: FormContainerProps) => {
-  const { onSubmit, children, component = "div", containerProps, stackProps } = props;
+  const { onSubmit, 
+          children, 
+          component = "div", 
+          containerProps, 
+          stackProps 
+        } = props;
 
   return (
     <Container

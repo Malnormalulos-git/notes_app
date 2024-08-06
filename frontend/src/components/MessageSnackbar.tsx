@@ -15,7 +15,12 @@ interface MessageSnackbarProps {
 }
 
 const MessageSnackbar = (props: MessageSnackbarProps) => {
-  const { open, message, onClose, severity, autoHideDuration } = props;
+  const { open, 
+          message, 
+          onClose, 
+          severity, 
+          autoHideDuration 
+        } = props;
 
   return (
     <Snackbar 
