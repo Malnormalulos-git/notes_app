@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using notes_app_backend.Data;
 using notes_app_backend.DTOs;
+using notes_app_backend.Utilities.Helpers;
 
 namespace notes_app_backend.Controllers;
 
@@ -14,20 +15,15 @@ namespace notes_app_backend.Controllers;
 [ApiController]
 public class NotesController : ControllerBase
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly UsersHelper _usersHelper;
     private readonly AppDbContext _appDbCtx;
     private readonly IMapper _mapper;
 
-    public NotesController(AppDbContext appDbCtx, IMapper mapper, IHttpContextAccessor httpContextAccessor)
+    public NotesController(AppDbContext appDbCtx, IMapper mapper, UsersHelper usersHelper)
     {
         _appDbCtx = appDbCtx;
         _mapper = mapper;
-        _httpContextAccessor = httpContextAccessor;
-    }
-
-    private string GetUserIdFromHttpContext()
-    {
-        return _httpContextAccessor.HttpContext!.User.Claims.First(c => c.Type == "id").Value;
+        _usersHelper = usersHelper;
     }
     
     [HttpPost(Name = "CreateNote")]
@@ -35,7 +31,7 @@ public class NotesController : ControllerBase
     [ProducesResponseType(500)]
     public async Task<IActionResult> CreateNote([FromBody] CreateNoteDto createNoteDto, CancellationToken ct = default)
     {
-        var userId = GetUserIdFromHttpContext();
+        var userId = _usersHelper.GetUserIdFromHttpContext();
         var noteToAdd = _mapper.Map<Note>(createNoteDto);
         
         noteToAdd.OwnerId = userId;
@@ -55,7 +51,7 @@ public class NotesController : ControllerBase
     [ProducesResponseType(404)]
     public async Task<IActionResult> GetNotes()
     {
-        var userId = GetUserIdFromHttpContext();
+        var userId = _usersHelper.GetUserIdFromHttpContext();
         
         var notes = await _appDbCtx.Notes
             .Where(n => n.OwnerId == userId)
@@ -77,7 +73,7 @@ public class NotesController : ControllerBase
     [ProducesResponseType(404)]
     public IActionResult GetNote([FromRoute(Name = "id")] long id)
     {
-        var userId = GetUserIdFromHttpContext();
+        var userId = _usersHelper.GetUserIdFromHttpContext();
         
         var note = _appDbCtx.Notes.FirstOrDefault(n => n.Id == id);
         
@@ -101,7 +97,7 @@ public class NotesController : ControllerBase
     [ProducesResponseType(500)]
     public async Task<IActionResult> EditNote([FromBody] EditNoteDto editNoteDto, CancellationToken ct = default)
     {
-        var userId = GetUserIdFromHttpContext();
+        var userId = _usersHelper.GetUserIdFromHttpContext();
 
         var note = _appDbCtx.Notes.FirstOrDefault(n => n.Id == editNoteDto.Id);
         if (note == null)
@@ -146,7 +142,7 @@ public class NotesController : ControllerBase
     [ProducesResponseType(500)]
     public async Task<IActionResult> DeleteNote([FromRoute(Name = "id")] long id, CancellationToken ct = default)
     {
-        var userId = GetUserIdFromHttpContext();
+        var userId = _usersHelper.GetUserIdFromHttpContext();
 
         var note = _appDbCtx.Notes.FirstOrDefault(x => x.Id == id);
         if (note is null)

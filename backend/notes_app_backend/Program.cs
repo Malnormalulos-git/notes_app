@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using notes_app_backend.Data;
+using notes_app_backend.Utilities.Helpers;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
@@ -13,7 +14,7 @@ builder.Configuration.AddUserSecrets(typeof(AppDbContext).Assembly);
 
 services.AddSingleton(builder.Configuration);
 services.AddSingleton(TimeProvider.System);
-services.AddScoped<HttpContextAccessor>();
+services.AddScoped<UsersHelper>();
 
 services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("WebApiDatabase")));
