@@ -1,5 +1,5 @@
 import { useDeleteNote, useGetNotes } from "../api/notesAppComponents";
-import { Box, Grid, CircularProgress, Alert } from "@mui/material";
+import { Box, Grid, CircularProgress, Alert, Pagination } from "@mui/material";
 import NoteCard from "../components/NoteCard";
 import MessageSnackbar, { MessageSnackbarAttributes } from "../components/MessageSnackbar";
 import { useEffect, useState } from "react";
@@ -12,6 +12,8 @@ import { NoteDto } from "../api/notesAppSchemas";
 import EditNote from "../components/EditNote";
 
 const HomePage = () => {
+  const [page, setPage] = useState(1);
+  const pageSize = 12;
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -28,9 +30,14 @@ const HomePage = () => {
 
   const queryClient = useQueryClient();
 
-  const { data: notes, status: queryStatus, error } = useGetNotes({});
+  const { data: notes, status: queryStatus, error } = useGetNotes({
+    queryParams: {
+      pageIndex: page,
+      pageSize: pageSize
+    }
+  });
 
-  const { mutate } = useDeleteNote(
+  const { mutate: deleteNote } = useDeleteNote(
     {
       onError: (e) => {
         setMessageSnackbarAttributes({
@@ -45,13 +52,16 @@ const HomePage = () => {
           message: "Note successfully deleted.",
           severity: "success"
         });
+        if(notes!.pageIndex == notes!.totalPages && 
+          (notes!.totalCount! - notes!.pageSize! * (notes!.totalPages! - 1)) == 1)
+            setPage(page - 1);
         queryClient.invalidateQueries();
       },
     }
   );
 
   const handleDeleteNote = (id: number) => {
-    mutate({
+    deleteNote({
       pathParams: {
         id: id
       }
@@ -67,9 +77,13 @@ const HomePage = () => {
     setEditingNote(null);
   };
 
+  const handleChangePage = (event: React.ChangeEvent<unknown>, pageIndex: number) => {
+    setPage(pageIndex);
+  };
+
   return (
     <>
-      <Box sx={{ p: 3 }}>
+      <Box sx={{ p: 3, pb: 12 }}>
         {queryStatus === 'pending' && (
           <Box 
             display="flex" 
@@ -81,30 +95,31 @@ const HomePage = () => {
         {queryStatus === 'error' && (
           <Alert severity="error">{`${error.message}: ${error.stack.payload || error.stack.title || error.name}.`}</Alert>
         )}
-        {queryStatus === 'success' && notes.length === 0 && (
+        {queryStatus === 'success' && notes.items!.length === 0 && (
           <Alert severity="info">No notes found</Alert>
         )}
         {queryStatus === 'success' && (
-          <Grid 
-            container 
-            spacing={3}
-          >
-            {notes.map(note => (
-              <Grid 
-                item 
-                xs={12} 
-                sm={6} 
-                md={4} 
-                key={note.id}
-              >
-                <NoteCard 
-                  note={note} 
-                  onDelete={handleDeleteNote}
-                  onEdit={handleEditNote}
-                />
-              </Grid>
-            ))}
-          </Grid>
+          <>
+            <Grid container spacing={3}>
+              {notes.items!.map(note => (
+                <Grid item xs={12} sm={6} md={4} key={note.id}>
+                  <NoteCard 
+                    note={note} 
+                    onDelete={handleDeleteNote}
+                    onEdit={handleEditNote}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+            {notes.totalPages != 1 && (<Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
+              <Pagination 
+                count={notes.totalPages} 
+                page={page} 
+                onChange={handleChangePage} 
+                color="primary" 
+              />
+            </Box>)}
+          </>
         )}
       </Box>
       <MessageSnackbar

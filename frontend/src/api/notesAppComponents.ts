@@ -131,36 +131,57 @@ export const useCreateNote = (
   });
 };
 
+export type GetNotesQueryParams = {
+  /**
+   * @format int32
+   */
+  pageIndex?: number;
+  /**
+   * @format int32
+   */
+  pageSize?: number;
+};
+
 export type GetNotesError = Fetcher.ErrorWrapper<{
   status: 404;
   payload: Schemas.ProblemDetails;
 }>;
 
-export type GetNotesResponse = Schemas.NoteDto[];
-
-export type GetNotesVariables = NotesAppContext["fetcherOptions"];
+export type GetNotesVariables = {
+  queryParams?: GetNotesQueryParams;
+} & NotesAppContext["fetcherOptions"];
 
 export const fetchGetNotes = (
   variables: GetNotesVariables,
   signal?: AbortSignal,
 ) =>
-  notesAppFetch<GetNotesResponse, GetNotesError, undefined, {}, {}, {}>({
-    url: "/api/notes",
-    method: "get",
-    ...variables,
-    signal,
-  });
+  notesAppFetch<
+    Schemas.NoteDtoPaginatedResult,
+    GetNotesError,
+    undefined,
+    {},
+    GetNotesQueryParams,
+    {}
+  >({ url: "/api/notes", method: "get", ...variables, signal });
 
-export const useGetNotes = <TData = GetNotesResponse,>(
+export const useGetNotes = <TData = Schemas.NoteDtoPaginatedResult,>(
   variables: GetNotesVariables,
   options?: Omit<
-    reactQuery.UseQueryOptions<GetNotesResponse, GetNotesError, TData>,
+    reactQuery.UseQueryOptions<
+      Schemas.NoteDtoPaginatedResult,
+      GetNotesError,
+      TData
+    >,
     "queryKey" | "queryFn" | "initialData"
   >,
 ) => {
   const { fetcherOptions, queryOptions, queryKeyFn } =
     useNotesAppContext(options);
-  return reactQuery.useQuery<GetNotesResponse, GetNotesError, TData>({
+  return reactQuery.useQuery<
+    Schemas.NoteDtoPaginatedResult,
+    GetNotesError,
+    TData
+  >({
     queryKey: queryKeyFn({
       path: "/api/notes",
       operationId: "getNotes",

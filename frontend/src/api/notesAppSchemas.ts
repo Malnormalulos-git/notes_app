@@ -46,6 +46,26 @@ export type NoteDto = {
   lastUpdatedAt?: string;
 };
 
+export type NoteDtoPaginatedResult = {
+  items?: NoteDto[] | null;
+  /**
+   * @format int32
+   */
+  pageIndex?: number;
+  /**
+   * @format int32
+   */
+  pageSize?: number;
+  /**
+   * @format int32
+   */
+  totalCount?: number;
+  /**
+   * @format int32
+   */
+  totalPages?: number;
+};
+
 export type ProblemDetails = {
   type?: string | null;
   title?: string | null;
