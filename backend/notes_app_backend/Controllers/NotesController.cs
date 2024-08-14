@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using notes_app_backend.Data;
 using notes_app_backend.DTOs;
 using notes_app_backend.Utilities;
+using notes_app_backend.Utilities.Extensions;
 using notes_app_backend.Utilities.Helpers;
 
 namespace notes_app_backend.Controllers;
@@ -49,21 +51,21 @@ public class NotesController : ControllerBase
     [ProducesResponseType(404)]
     public Task<IActionResult> GetNotes(
         [FromQuery(Name = "pageIndex")] int pageIndex,
-        [FromQuery(Name = "pageSize")] int pageSize)
+        [FromQuery(Name = "pageSize")] int pageSize,
+        [FromQuery(Name = "searchTerm")] string? searchTerm)
     {
         var userId = _usersHelper.GetUserIdFromHttpContext();
 
         var notes = _appDbCtx.Notes
             .Where(n => n.OwnerId == userId)
+            .WhereIf(!searchTerm.IsNullOrEmpty(), 
+                n => n.Title.ToLower().Contains(searchTerm.ToLower()) || 
+                          n.Content.ToLower().Contains(searchTerm.ToLower())
+                          )
             .OrderByDescending(note => note.LastUpdatedAt)
             .Select(t => _mapper.Map<NoteDto>(t));
 
         var pagedNotes = new PaginatedResult<NoteDto>(notes, pageIndex, pageSize);
-        
-        if (pagedNotes.Items.Count == 0)
-        {
-            return Task.FromResult<IActionResult>(new NotFoundResult());
-        }
         
         return Task.FromResult<IActionResult>(new OkObjectResult(pagedNotes));
     }
