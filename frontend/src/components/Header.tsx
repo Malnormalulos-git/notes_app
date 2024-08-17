@@ -10,6 +10,7 @@ import { Box } from '@mui/material';
 import getAccessToken from '../shared/getAccessToken';
 import logOut from '../shared/logOut';
 import refreshPage from '../shared/refreshPage';
+import SearchBar from './SearchBar';
 
 const Header = () => {
   const handleLogout = () => {
@@ -54,17 +55,23 @@ const Header = () => {
               </Box>
               { getAccessToken() ? 
               (
-                <Box
-                  sx={{
-                    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-                    fontWeight: 500,
-                    letterSpacing: '0.05rem',
-                    cursor: 'pointer',
-                  }}
-                  onClick={handleLogout}
-                >
-                  Logout
-                </Box>
+                <>
+                  <SearchBar/>
+                  <Box
+                    sx={{
+                      fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+                      fontWeight: 500,
+                      letterSpacing: '0.05rem',
+                      cursor: 'pointer',
+                      minWidth: { xs: '0', sm: '150px' },
+                      display: 'flex',
+                      flexDirection: 'row-reverse'
+                    }}
+                    onClick={handleLogout}
+                  >
+                    Logout
+                  </Box>
+                </>
               )
               :
               (<Box

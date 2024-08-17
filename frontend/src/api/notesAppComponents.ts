@@ -140,6 +140,7 @@ export type GetNotesQueryParams = {
    * @format int32
    */
   pageSize?: number;
+  searchTerm?: string;
 };
 
 export type GetNotesError = Fetcher.ErrorWrapper<{

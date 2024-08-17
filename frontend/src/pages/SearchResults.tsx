@@ -1,11 +1,12 @@
-import { useGetNotes } from "../api/notesAppComponents";
 import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import getAccessToken from "../shared/getAccessToken";
-import { useNavigate } from "react-router-dom";
 import { LOGIN_ROUTE } from "../router/routes";
+import { useGetNotes } from "../api/notesAppComponents";
 import NoteListView from "../components/NoteListView";
 
-const HomePage = () => {
+const SearchResults = () => {
+  const {searchTerm} = useParams();
   const [pageIndex, setPageIndex] = useState(1);
   const pageSize = 12;
   const navigate = useNavigate();
@@ -19,7 +20,8 @@ const HomePage = () => {
   const query = useGetNotes({
     queryParams: {
       pageIndex: pageIndex,
-      pageSize: pageSize
+      pageSize: pageSize,
+      searchTerm: searchTerm
     }
   });
 
@@ -30,6 +32,6 @@ const HomePage = () => {
       setPageIndex={setPageIndex}
     />
   );
-};
+}
 
-export default HomePage;
+export default SearchResults;
