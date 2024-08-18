@@ -52,7 +52,9 @@ public class NotesController : ControllerBase
     public Task<IActionResult> GetNotes(
         [FromQuery(Name = "pageIndex")] int pageIndex,
         [FromQuery(Name = "pageSize")] int pageSize,
-        [FromQuery(Name = "searchTerm")] string? searchTerm)
+        [FromQuery(Name = "searchTerm")] string? searchTerm,
+        [FromQuery(Name = "sortType")] SortType sortType = SortType.byLastUpdateTime,
+        [FromQuery(Name = "isByDescending")] bool isByDescending = true)
     {
         var userId = _usersHelper.GetUserIdFromHttpContext();
 
@@ -62,7 +64,7 @@ public class NotesController : ControllerBase
                 n => n.Title.ToLower().Contains(searchTerm.ToLower()) || 
                           n.Content.ToLower().Contains(searchTerm.ToLower())
                           )
-            .OrderByDescending(note => note.LastUpdatedAt)
+            .OrderByNoteSortType(sortType, isByDescending)
             .Select(t => _mapper.Map<NoteDto>(t));
 
         var pagedNotes = new PaginatedResult<NoteDto>(notes, pageIndex, pageSize);
