@@ -1,9 +1,12 @@
+using System.Text.Json.Serialization;
 using AutoMapper.EquivalencyExpression;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 using notes_app_backend.Data;
 using notes_app_backend.Utilities.Helpers;
 
@@ -54,9 +57,14 @@ builder.Services.AddAuthentication(options =>
 });
 builder.Services.AddAuthorization(); 
 
-services.AddControllers();
+services.AddControllers()
+    .AddNewtonsoftJson(options => options
+        .SerializerSettings
+        .Converters
+        .Add(new StringEnumConverter {NamingStrategy = new CamelCaseNamingStrategy()}));
 services.AddEndpointsApiExplorer();
-services.AddSwaggerGen();
+services.AddSwaggerGen()
+    .AddSwaggerGenNewtonsoftSupport();
 
 services.AddCors(options => options.AddDefaultPolicy(
     corsPolicyBuilder => {
