@@ -141,6 +141,11 @@ export type GetNotesQueryParams = {
    */
   pageSize?: number;
   searchTerm?: string;
+  sortType?: Schemas.SortType;
+  /**
+   * @default true
+   */
+  isByDescending?: boolean;
 };
 
 export type GetNotesError = Fetcher.ErrorWrapper<{

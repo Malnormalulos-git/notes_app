@@ -4,11 +4,16 @@ import getAccessToken from "../shared/getAccessToken";
 import { LOGIN_ROUTE } from "../router/routes";
 import { useGetNotes } from "../api/notesAppComponents";
 import NoteListView from "../components/NoteListView";
+import SortSelector from "../components/SortSelector";
+import { SortType } from "../api/notesAppSchemas";
 
 const SearchResults = () => {
   const {searchTerm} = useParams();
   const [pageIndex, setPageIndex] = useState(1);
   const pageSize = 12;
+  const [sortType, setSortType] = useState<SortType>("byLastUpdateTime");
+  const [isByDescending, setIsByDescending] = useState(true);
+
   const navigate = useNavigate();
   
   useEffect(() => {
@@ -21,16 +26,26 @@ const SearchResults = () => {
     queryParams: {
       pageIndex: pageIndex,
       pageSize: pageSize,
-      searchTerm: searchTerm
+      searchTerm: searchTerm,
+      sortType: sortType,
+      isByDescending: isByDescending
     }
   });
 
   return (
-    <NoteListView
-      query={query}
-      pageIndex={pageIndex}
-      setPageIndex={setPageIndex}
-    />
+    <>
+      <SortSelector
+        sortType={sortType}
+        isByDescending={isByDescending}
+        onSortTypeChange={setSortType}
+        onOrderChange={setIsByDescending}
+      />
+      <NoteListView
+        query={query}
+        pageIndex={pageIndex}
+        setPageIndex={setPageIndex}
+      />
+    </>
   );
 }
 

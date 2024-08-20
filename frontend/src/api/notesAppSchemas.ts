@@ -86,3 +86,9 @@ export type RegisterUserDto = {
   email?: string | null;
   password?: string | null;
 };
+
+export type SortType =
+  | "byTitle"
+  | "byContent"
+  | "byCreationTime"
+  | "byLastUpdateTime";
