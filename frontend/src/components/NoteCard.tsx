@@ -2,6 +2,7 @@ import { Box, Card, CardContent, IconButton, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import { NoteDto } from "../api/notesAppSchemas";
 import InfoTextTypography from "./InfoTestTypography";
+import { KeyboardEvent } from "react";
 
 interface NoteCardProps {
   note: NoteDto;
@@ -27,6 +28,9 @@ const NoteCard = ({note, onDelete, onEdit} : NoteCardProps) => {
         >
           <Typography 
             variant="h6"
+            title={note.title!}
+            tabIndex={0}
+            onKeyDown={(e : KeyboardEvent) => e.key === 'Enter' && onEdit(note)}
             onClick={() => onEdit(note)}
             sx={{ cursor: 'pointer' }}
           >
@@ -38,7 +42,10 @@ const NoteCard = ({note, onDelete, onEdit} : NoteCardProps) => {
             <DeleteIcon/>
           </IconButton>
         </Box>
-        <Typography 
+        {note.content && <Typography 
+          title={note.title + "`s Content"}
+          tabIndex={0}
+          onKeyDown={(e) => e.key === 'Enter' && onEdit(note)}
           onClick={() => onEdit(note)}
           noWrap
           sx={{ 
@@ -47,7 +54,7 @@ const NoteCard = ({note, onDelete, onEdit} : NoteCardProps) => {
           }}
         >
           {note.content}
-        </Typography>
+        </Typography>}
         <InfoTextTypography
         text={
           note.lastUpdatedAt === note.createdAt

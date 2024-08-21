@@ -67,9 +67,15 @@ const Header = () => {
                       display: 'flex',
                       flexDirection: 'row-reverse'
                     }}
-                    onClick={handleLogout}
                   >
-                    Logout
+                    <Box 
+                      onKeyDown={(e) => e.key === 'Enter' && handleLogout()}
+                      title="Logout"
+                      tabIndex={0}
+                      onClick={handleLogout}
+                    >
+                      Logout
+                    </Box>
                   </Box>
                 </>
               )
