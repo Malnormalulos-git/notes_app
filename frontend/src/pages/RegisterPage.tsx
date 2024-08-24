@@ -9,7 +9,7 @@ import FormSubmitButton from "../components/form/FormSubmitButton";
 import MessageSnackbar from "../components/MessageSnackbar";
 import AuthFormContainer from "../components/form/Auth/AuthFormContainer";
 import { useNavigate } from "react-router-dom";
-import { REGISTER_ROUTE } from "../router/routes";
+import { LOGIN_ROUTE } from "../router/routes";
 
 const validationSchema = z
   .object({
@@ -45,7 +45,7 @@ const RegisterPage = () => {
 
   const {mutate} = useRegister({
     onSuccess: () => {  
-      navigate(REGISTER_ROUTE);
+      navigate(LOGIN_ROUTE);
     },
     onError: (e) => { 
       setQueryError(`${e.message}: ${e.stack.payload || e.stack.title || e.name}.`);
