@@ -12,6 +12,7 @@ import NoteFormModal from "./form/Note/NoteFormModal";
 import NoteTitleTextField from "./form/Note/NoteTitleTextField";
 import NoteContentTextField from "./form/Note/NoteContentTextField";
 import InfoTextTypography from "./InfoTestTypography";
+import formatDate from "../shared/formatDate";
 
 const validationSchema = z
   .object({
@@ -101,9 +102,9 @@ const EditNote = ({ note, open, onClose, setMessageSnackbarAttributes }: EditNot
       <InfoTextTypography
         text={
           note.lastUpdatedAt === note.createdAt
-            ? `Created: ${new Date(note.createdAt!).toLocaleString()}`
-            : `Created: ${new Date(note.createdAt!).toLocaleString()}
-               Updated: ${new Date(note.lastUpdatedAt!).toLocaleString()}`
+            ? `Created: ${formatDate(note.createdAt!)}`
+            : `Created: ${formatDate(note.createdAt!)}
+               Updated: ${formatDate(note.lastUpdatedAt!)}`
         }
       />
       <NoteTitleTextField

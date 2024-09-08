@@ -71,7 +71,12 @@ const NoteListView = ({query, pageIndex: page, setPageIndex: setPage}: NoteListV
 
   return (
     <>
-      <Box sx={{ p: 3, pb: 12 }}>
+      <Box 
+        sx={{ 
+          p: 3, 
+          pb: 12
+        }}
+      >
         {queryStatus === 'pending' && (
           <Box 
             display="flex" 
@@ -99,14 +104,22 @@ const NoteListView = ({query, pageIndex: page, setPageIndex: setPage}: NoteListV
                 </Grid>
               ))}
             </Grid>
-            {notes.totalPages! > 1 && (<Box sx={{ display: 'flex', justifyContent: 'center', mt: 3 }}>
-              <Pagination 
-                count={notes.totalPages} 
-                page={page} 
-                onChange={handleChangePage} 
-                color="primary" 
-              />
-            </Box>)}
+            {notes.totalPages! > 1 && (
+              <Box 
+                sx={{ 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  mt: 3 
+                }}
+              >
+                <Pagination 
+                  count={notes.totalPages} 
+                  page={page} 
+                  onChange={handleChangePage} 
+                  color="primary" 
+                />
+              </Box>
+            )}
           </>
         )}
       </Box>

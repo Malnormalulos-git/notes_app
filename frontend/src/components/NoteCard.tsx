@@ -3,6 +3,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { NoteDto } from "../api/notesAppSchemas";
 import InfoTextTypography from "./InfoTestTypography";
 import { KeyboardEvent } from "react";
+import formatDate from "../shared/formatDate";
 
 interface NoteCardProps {
   note: NoteDto;
@@ -58,8 +59,8 @@ const NoteCard = ({note, onDelete, onEdit} : NoteCardProps) => {
         <InfoTextTypography
         text={
           note.lastUpdatedAt === note.createdAt
-            ? `Created: ${new Date(note.createdAt!).toLocaleString()}`
-            : `Updated: ${new Date(note.lastUpdatedAt!).toLocaleString()}`
+            ? `Created: ${formatDate(note.createdAt!)}`
+            : `Updated: ${formatDate(note.lastUpdatedAt!)}`
         }
         />
       </CardContent>
