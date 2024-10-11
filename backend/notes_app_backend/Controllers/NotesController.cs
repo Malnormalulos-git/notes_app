@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using notes_app_backend.Data;
 using notes_app_backend.DTOs;
@@ -42,14 +43,14 @@ public class NotesController : ControllerBase
         {
             return new StatusCodeResult(500);
         }
-        var addedNote = _mapper.Map<NoteDto>(noteToAdd);
-        return new OkObjectResult(addedNote);
+        
+        return new OkResult();
     }
     
     [HttpGet(Name = "GetNotes")]
     [ProducesResponseType(typeof(PaginatedResult<NoteDto>), 200)]
     [ProducesResponseType(404)]
-    public Task<IActionResult> GetNotes(
+    public IActionResult GetNotes(
         [FromQuery(Name = "pageIndex")] int pageIndex,
         [FromQuery(Name = "pageSize")] int pageSize,
         [FromQuery(Name = "searchTerm")] string? searchTerm,
@@ -65,11 +66,12 @@ public class NotesController : ControllerBase
                           n.Content.ToLower().Contains(searchTerm.ToLower())
                           )
             .OrderByNoteSortType(sortType, isByDescending)
-            .Select(t => _mapper.Map<NoteDto>(t));
+            .Select(t => _mapper.Map<NoteDto>(t))
+            .AsNoTracking();
 
         var pagedNotes = new PaginatedResult<NoteDto>(notes, pageIndex, pageSize);
         
-        return Task.FromResult<IActionResult>(new OkObjectResult(pagedNotes));
+        return new OkObjectResult(pagedNotes);
     }
     
     [HttpGet("{id:long}", Name = "GetNote")]

@@ -65,8 +65,6 @@ public class AuthController : ControllerBase
 
     private Task<string> IssueToken(AppUser user)
     {
-        var jwtTokenHandler = new JwtSecurityTokenHandler();
-        
         var key = Encoding.UTF8.GetBytes(_configuration["JWT:SingingKey"]);
         var secretKey = new SymmetricSecurityKey(key);
         
